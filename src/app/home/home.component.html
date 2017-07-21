@@ -1,2 +1,17 @@
-<h3>Home Component</h3>
-<p>Welcome to Angular Seed</p>
+<h3>Welcome</h3>
+<div class="auto-complete panel">
+    <input [(ngModel)]=keyword type="text" (keyup)="onKeyup(keyword)" class="auto-complete"
+    placeholder="type here.."/>
+
+    <div class="dropdown" *ngIf="!autocompleteBox.hide">
+        <!-- <li class="list-style">
+            searching for {{keyword}}
+        </li> -->
+        <ul *ngIf="posts.length" class="dropdown-menu">
+            <li (click)="settitle(post)" class="list-style" *ngFor="let post of posts">
+                {{post.formatted_address}}
+            </li>
+        </ul>
+
+    </div>
+</div>
