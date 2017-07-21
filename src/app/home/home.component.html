@@ -1,6 +1,6 @@
 <h3>Welcome</h3>
 <div class="auto-complete panel">
-    <input [(ngModel)]=keyword type="text" (keyup)="onKeyup(keyword)" class="auto-complete"
+    <input [(ngModel)]=keyword type="text" (keyup)="onKeyup($event,keyword)" class="auto-complete"
     placeholder="type here.."/>
 
     <div class="dropdown" *ngIf="!autocompleteBox.hide">
@@ -8,10 +8,11 @@
             searching for {{keyword}}
         </li> -->
         <ul *ngIf="posts.length" class="dropdown-menu">
-            <li (click)="settitle(post)" class="list-style" *ngFor="let post of posts">
+            <li (click)="settitle(post)" class="list-style" *ngFor="let post of posts;let i = index" [class.active]="i == arrowkeyLocation">
                 {{post.formatted_address}}
             </li>
         </ul>
 
     </div>
 </div>
+
