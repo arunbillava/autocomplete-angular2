@@ -1,8 +1,6 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { Subject } from "rxjs";
 import { AutoCompleteService } from "../services/autocomplete.services";
-import { isNullOrUndefined } from "util";
-
 
 @Component({
   selector: 'home',
@@ -10,72 +8,82 @@ import { isNullOrUndefined } from "util";
   templateUrl: './home.component.html',
   providers: [AutoCompleteService]
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent {
 
   searchTerm = new Subject<any>();
   posts: any[] = [];
   autocompleteBox = { hide: true };
   keyword: string = "";
   selectedPost: any;
-  constructor(private autoCompleteService: AutoCompleteService, private elRef: ElementRef) {
+  isActive: any;
+  constructor(private autoCompleteService: AutoCompleteService) {
+    //to reduce flickering add 400 debounce time
     this.searchTerm.debounceTime(400).distinctUntilChanged().subscribe(searchTerm => {
       console.log(searchTerm);
       this.selectedPost = null;
+      //call api
       this.autoCompleteService.getSuggestion(searchTerm).subscribe(response => {
-
         this.posts = response.results;
-
         this.autocompleteBox.hide = false;
+        //if posts are there then activate first on dropdown
+        if (this.posts != undefined && this.posts.length > 0) {
+          this.isActive = this.posts[0];
+        }
 
       }, err => {
-
         console.log(err);
-
       });
     });
   }
-  ngAfterViewInit() {
+  //current activated from dropdown
+  private active(value: any): boolean {
+    return this.isActive === value;
+  }
+  //arrow down 
+  public prevActiveMatch() {
+    let index = this.posts.indexOf(this.isActive);
+    this.isActive = this.posts[index - 1 < 0 ? this.posts.length - 1 : index - 1];
+    this.keyword = this.isActive.formatted_address;
+  }
+  //arrow up
+  public nextActiveMatch() {
+    let index = this.posts.indexOf(this.isActive);
+    this.isActive = this.posts[index + 1 > this.posts.length - 1 ? 0 : index + 1];
+    this.keyword = this.isActive.formatted_address;
   }
 
-  ngOnInit() {
-
-  }
-  arrowkeyLocation = 0;
-
+  //on key up
   onKeyup(event: any, searchText: string) {
 
-
-
-
-    if (event.keyCode === 40 && this.arrowkeyLocation < this.posts.length - 1) {
+    if (event.keyCode === 40) {
       // Arrow Down
-      this.arrowkeyLocation++;
-    } else if (event.keyCode === 38 && this.arrowkeyLocation > 0) {
+      this.nextActiveMatch();
+      return;
+    } else if (event.keyCode === 38) {
       // Arrow Up
-      this.arrowkeyLocation--;
+      this.nextActiveMatch();
+      return;
     }
-
-
-
-
-
-
-
-
-
-    console.log("code is" + event.keyCode)
-
+    // enter
+    if (event.keyCode === 13) {
+      this.onSelect(this.isActive);
+      return;
+    }
+    //if text entered
     if (searchText !== "") {
       this.searchTerm.next(searchText);
       this.selectedPost = null;
     }
     else {
+      //if empty hide dropdown and empty result
       this.autocompleteBox.hide = true;
+      console.log("empty..")
+      this.posts = [];
     }
 
   }
-
-  settitle(post: any) {
+  //on select
+  onSelect(post: any) {
     this.keyword = post.formatted_address;
     this.selectedPost = post;
     this.autocompleteBox.hide = true;

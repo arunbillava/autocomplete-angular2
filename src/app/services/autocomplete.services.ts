@@ -15,7 +15,8 @@ export class AutoCompleteService {
 
     constructor(private http: Http) {
     }
-
+    
+    //for get result using google api as dummy api
     getSuggestion(searchdata: string): Observable<any> {
         let url = "https://maps.googleapis.com/maps/api/geocode/json?address="+searchdata;
 
