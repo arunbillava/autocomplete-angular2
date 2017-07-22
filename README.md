@@ -1,7 +1,7 @@
 ## angular2-autocomplete
 
 A simple project to explain about autocomplete using angular 2/ angular 4.
-
+Easier to call api for autocomplete
 
 ### Usage
 - Clone or fork this repository
@@ -13,5 +13,5 @@ A simple project to explain about autocomplete using angular 2/ angular 4.
 - open browser to [`http://localhost:3000`](http://localhost:3000)
 - if you want to use other port, open `package.json` file, then change port in `--port 3000` script
 
-###Author
+### Author
 Arun billava (billavaa@gmail.com)
