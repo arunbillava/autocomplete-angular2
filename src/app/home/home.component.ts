@@ -61,7 +61,7 @@ export class HomeComponent {
       return;
     } else if (event.keyCode === 38) {
       // Arrow Up
-      this.nextActiveMatch();
+      this.prevActiveMatch();
       return;
     }
     // enter
